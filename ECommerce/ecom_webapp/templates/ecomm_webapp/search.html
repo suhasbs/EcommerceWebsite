@@ -1,0 +1,24 @@
+{% extends 'ecomm_webapp/base.html' %}
+{% block content %}
+	
+	<div class="container-fluid" >
+	{% for product in all_books %}
+
+
+	{% if forloop.first %}<div class="row">{% endif %}
+    <div class="col">
+            <a href={{ product.url }}>
+            	<img src= {{ product.image_url }} width="120" height="180"><br>
+                {{ product.name }}
+            </a>
+    </div>
+    {% if forloop.counter|divisibleby:3 %}</div><hr><div class="row">{% endif %}
+    {% if forloop.last %}</div>{% endif %}
+		
+
+	{% endfor %}
+	</div>
+ 
+
+
+{% endblock %}

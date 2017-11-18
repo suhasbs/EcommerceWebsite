@@ -1,0 +1,287 @@
+CREATE TABLE `ecommerce_db`.`product` (
+  `pdt_id` VARCHAR(20) NOT NULL,
+  `brand_name` VARCHAR(45) NULL,
+  `description` VARCHAR(255) NULL,
+  `unit_weight` VARCHAR(45) NULL,
+  `units_in_stock` VARCHAR(45) NULL,
+  PRIMARY KEY (`pdt_id`));
+
+
+
+CREATE TABLE `ecommerce_db`.`books` (
+  `pdt_id` VARCHAR(20) NOT NULL,
+  `publisher` VARCHAR(50) NOT NULL,
+  `genre` VARCHAR(50) NULL,
+  `summary` VARCHAR(100) NULL,
+  PRIMARY KEY (`pdt_id`),
+  CONSTRAINT `pdt_id`
+    FOREIGN KEY (`pdt_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`product_images` (
+  `product_id` VARCHAR(20) NOT NULL,
+  `image_url` VARCHAR(100) NULL,
+  PRIMARY KEY (`product_id`,`image_url`),
+  CONSTRAINT `product_id`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`authors` (
+  `book_id` VARCHAR(20) NOT NULL,
+  `author_name` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`book_id`, `author_name`),
+  CONSTRAINT `book_id`
+    FOREIGN KEY (`book_id`)
+    REFERENCES `ecommerce_db`.`books` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+
+CREATE TABLE `ecommerce_db`.`clothes` (
+  `cloth_id` VARCHAR(20) NOT NULL,
+  `gender` VARCHAR(10) NOT NULL,
+  `material` VARCHAR(50) NULL,
+  `type` VARCHAR(20) NULL,
+  `size` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`cloth_id`),
+  CONSTRAINT `cloth_id`
+    FOREIGN KEY (`cloth_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`mobiles` (
+  `mobile_id` VARCHAR(20) NOT NULL,
+  `model_no` VARCHAR(20) NOT NULL,
+  `ram` VARCHAR(5) NOT NULL,
+  `screen_size` VARCHAR(10) NOT NULL,
+  `internal_memory` VARCHAR(10) NOT NULL,
+  `processor` VARCHAR(50) NOT NULL,
+  `primary_camera` VARCHAR(5) NULL,
+  `secondary_camera` VARCHAR(5) NULL,
+  PRIMARY KEY (`mobile_id`),
+  CONSTRAINT `mobile_id`
+    FOREIGN KEY (`mobile_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+
+CREATE TABLE `ecommerce_db`.`television` (
+  `tv_id` VARCHAR(20) NOT NULL,
+  `model_no` VARCHAR(20) NULL,
+  `type` VARCHAR(20) NULL,
+  `display_size` VARCHAR(10) NULL,
+  PRIMARY KEY (`tv_id`),
+  CONSTRAINT `tv_id`
+    FOREIGN KEY (`tv_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+CREATE TABLE `ecommerce_db`.`laptop` (
+  `laptop_id` VARCHAR(20) NOT NULL,
+  `model_no` VARCHAR(20) NULL,
+  `display_size` VARCHAR(10) NULL,
+  `harddisk_capacity` VARCHAR(10) NULL,
+  `ram` VARCHAR(5) NULL,
+  `processor` VARCHAR(30) NULL,
+  PRIMARY KEY (`laptop_id`),
+  CONSTRAINT `laptop_id`
+    FOREIGN KEY (`laptop_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`accessory` (
+  `acc_id` VARCHAR(20) NOT NULL,
+  `model_no` VARCHAR(20) NULL,
+  `type` VARCHAR(30) NULL,
+  `spec` VARCHAR(100) NULL,
+  PRIMARY KEY (`acc_id`),
+  CONSTRAINT `acc_id`
+    FOREIGN KEY (`acc_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`furniture` (
+  `furniture_id` VARCHAR(20) NOT NULL,
+  `type` VARCHAR(20) NULL,
+  `dimensions` VARCHAR(20) NULL,
+  `material` VARCHAR(20) NULL,
+  PRIMARY KEY (`furniture_id`),
+  CONSTRAINT `furniture_id`
+    FOREIGN KEY (`furniture_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`supplier` (
+  `sup_id` INT NOT NULL,
+  `sup_name` VARCHAR(100) NULL,
+  `contact` INT(15) NULL,
+  `address` VARCHAR(45) NULL,
+  PRIMARY KEY (`sup_id`));
+
+
+
+
+CREATE TABLE `ecommerce_db`.`customer` (
+  `first_name` VARCHAR(50) NULL,
+  `last_name` VARCHAR(50) NULL,
+  `email_id` VARCHAR(100) NOT NULL,
+  `contact_no` VARCHAR(15) NULL,
+  `cart_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`email_id`),
+  INDEX `user_id_idx` (`user_id` ASC),
+  CONSTRAINT `user_id`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `ecommerce_db`.`auth_user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+CREATE TABLE `ecommerce_db`.`cart` (
+  `cart_id` INT NOT NULL,
+  `cust_email` VARCHAR(100) NOT NULL,
+  `no_of_products` INT NULL,
+  `total_price` DECIMAL(10,2) NULL,
+  PRIMARY KEY (`cart_id`, `cust_email`),
+  INDEX `cust_email_idx` (`cust_email` ASC),
+  CONSTRAINT `cust_email`
+    FOREIGN KEY (`cust_email`)
+    REFERENCES `ecommerce_db`.`customer` (`email_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`order` (
+  `order_id` INT NOT NULL,
+  `order_datetime` DATETIME NULL,
+  `delivery_date` DATE NULL,
+  `delivery_address` VARCHAR(255) NULL,
+  `cart_id_fk` INT NOT NULL,
+  PRIMARY KEY (`order_id`),
+  INDEX `cart_id_idx` (`cart_id_fk` ASC),
+  CONSTRAINT `cart_id_fk`
+    FOREIGN KEY (`cart_id_fk`)
+    REFERENCES `ecommerce_db`.`cart` (`cart_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE `ecommerce_db`.`bill` (
+  `bill_id` INT NOT NULL,
+  `billing_price` DECIMAL(10,2) NOT NULL,
+  `payment_type` VARCHAR(20) NOT NULL,
+  `bill_replaces` INT NULL,
+  PRIMARY KEY (`bill_id`));
+
+
+ALTER TABLE `ecommerce_db`.`bill` 
+ADD INDEX `bill_replaces_idx` (`bill_replaces` ASC);
+ALTER TABLE `ecommerce_db`.`bill` 
+ADD CONSTRAINT `bill_replaces`
+  FOREIGN KEY (`bill_replaces`)
+  REFERENCES `ecommerce_db`.`bill` (`bill_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+CREATE TABLE `ecommerce_db`.`product_supply` (
+  `supplier_id` INT NOT NULL,
+  `prod_id` VARCHAR(20) NOT NULL,
+  `price` DECIMAL(10,2) NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`supplier_id`, `prod_id`),
+  INDEX `prod_id_idx` (`prod_id` ASC),
+  CONSTRAINT `supplier_id`
+    FOREIGN KEY (`supplier_id`)
+    REFERENCES `ecommerce_db`.`supplier` (`sup_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `prod_id`
+    FOREIGN KEY (`prod_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+CREATE TABLE `ecommerce_db`.`products_in_cart` (
+  `cart_id_fk` INT NOT NULL,
+  `product_id` VARCHAR(20) NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`cart_id_fk`, `product_id`),
+  INDEX `product_id_idx` (`products_id` ASC),
+  CONSTRAINT `cart_id_fk`
+    FOREIGN KEY (`cart_id_fk`)
+    REFERENCES `ecommerce_db`.`cart` (`cart_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `product_id`
+    FOREIGN KEY (`products_id`)
+    REFERENCES `ecommerce_db`.`product` (`pdt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+create table products_in_cart( cart_id_fk int not null, prd_id varchar(20) not null, quantity int not null, primary key(cart_id_fk, prd_id), foreign key(cart_id_fk) references cart(cart_id), foreign key(prd_id) references product(pdt_id) );
+
+
+CREATE TABLE `ecommerce_db`.`generate_bill` (
+  `order_id_fk` INT NOT NULL,
+  `bill_id_fk` INT NULL,
+  `customer_id_fk` VARCHAR(100) NULL,
+  PRIMARY KEY (`order_id_fk`),
+  INDEX `fk2_idx` (`customer_id_fk` ASC),
+  INDEX `fk3_idx` (`bill_id_fk` ASC),
+  CONSTRAINT `fk1`
+    FOREIGN KEY (`order_id_fk`)
+    REFERENCES `ecommerce_db`.`order` (`order_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk2`
+    FOREIGN KEY (`customer_id_fk`)
+    REFERENCES `ecommerce_db`.`customer` (`email_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk3`
+    FOREIGN KEY (`bill_id_fk`)
+    REFERENCES `ecommerce_db`.`bill` (`bill_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+[client]
+database = ecommerce_db
+user = suhas
+password = WebTechProject
+default-character-set = utf8
